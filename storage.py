@@ -73,7 +73,8 @@ def upload_target(path: str, content_type: str, local_url: str, csrf: str) -> di
     if not USE_SUPABASE:
         return {"url": local_url, "method": "PUT",
                 "headers": {"Content-Type": content_type, "X-CSRF-Token": csrf}}
-    r = requests.post(_api(f"/object/upload/sign/{BUCKET}/{path}"), headers=_headers(), timeout=15)
+    # тело {} обязательно: пустой запрос с Content-Type: application/json Supabase отклоняет (400)
+    r = requests.post(_api(f"/object/upload/sign/{BUCKET}/{path}"), headers=_headers(), json={}, timeout=15)
     data = _check(r, "upload/sign")
     headers = {"Content-Type": content_type, "x-upsert": "false"}
     if PUBLISHABLE_KEY:
