@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ env.title }}{% endblock %}
+{% block content %}
+<div class="wrap">
+  <a class="back" href="{{ url_for('home') }}">← все письма</a>
+  <div class="card opening">
+    <div class="big-emoji">{{ env.emoji }}</div>
+    <h2 class="center">{{ env.title }}</h2>
+
+    {% if env.image %}<img class="photo" src="{{ url_for('media', name=env.image) }}" alt="">{% endif %}
+
+    <div class="letter">
+      {% if env.body.strip() %}{{ env.body|paragraphs }}{% else %}<p class="center">…</p>{% endif %}
+    </div>
+
+    {% if env.audio %}<audio controls preload="none" src="{{ url_for('media', name=env.audio) }}"></audio>{% endif %}
+
+    {% if env.music_url %}
+      <a class="btn ghost" href="{{ env.music_url }}" target="_blank" rel="noopener">🎵 Послушай эту песню</a>
+    {% endif %}
+
+    <p style="margin-top:22px;text-align:right;font-family:'Playfair Display',serif;font-style:italic">— Амир</p>
+  </div>
+</div>
+{% endblock %}

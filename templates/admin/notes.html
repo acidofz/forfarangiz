@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Записки{% endblock %}
+{% block content %}
+<div class="wrap wide">
+  <a class="back" href="{{ url_for('admin') }}">← конверты</a>
+  <h2>Записки дня</h2>
+  {% for m in get_flashed_messages() %}<div class="flash">{{ m }}</div>{% endfor %}
+
+  <div class="card" style="margin-bottom:14px">
+    <p>Новая записка появляется на сайте каждый день в <b>{{ note_time }}</b> · в очереди без даты: <b>{{ queue_left }}</b>
+      {% if queue_left <= 3 %}<span style="color:var(--bad)"> — мало, пополни</span>{% endif %}</p>
+  </div>
+
+  <a class="btn" href="{{ url_for('admin_note_edit') }}">+ Новая записка</a>
+
+  <h2 style="margin-top:22px">В очереди</h2>
+  <div class="card">
+    {% for n in queued %}
+    <div class="row">
+      <div class="e">{{ '📅' if n.scheduled_for else '📝' }}</div>
+      <div class="info">
+        <b>{{ (n.text or '(медиа)')[:70] }}</b>
+        <small>{% if n.scheduled_for %}на {{ n.scheduled_for.strftime('%d.%m.%Y') }}{% else %}#{{ loop.index }} в очереди{% endif %}
+          {% if n.image %} · 🖼{% endif %}{% if n.audio %} · 🎙{% endif %}</small>
+      </div>
+      <a class="edit" href="{{ url_for('admin_note_edit', nid=n.id) }}">ред.</a>
+    </div>
+    {% else %}<p>Очередь пуста</p>{% endfor %}
+  </div>
+
+  <h2 style="margin-top:22px">Вышли</h2>
+  <div class="card">
+    {% for n in published %}
+    <div class="row">
+      <div class="e">✅</div>
+      <div class="info">
+        <b>{{ (n.text or '(медиа)')[:70] }}</b>
+        <small>{{ n.published_on.strftime('%d.%m') }} ·
+          {{ 'видела на сайте' if n.seen_at else 'на сайте не открывала' }}</small>
+      </div>
+      <a class="edit" href="{{ url_for('admin_note_edit', nid=n.id) }}">ред.</a>
+    </div>
+    {% else %}<p>Пока ничего</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

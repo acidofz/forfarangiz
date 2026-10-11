@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="theme-color" content="#2a0f1f">
+<title>{% block title %}Для тебя{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="hearts" id="hearts"></div>
+{% block content %}{% endblock %}
+<script>
+(function(){
+  const box=document.getElementById("hearts"), sym=["❤","♡","💗","✨"];
+  for(let i=0;i<14;i++){
+    const h=document.createElement("span");
+    h.textContent=sym[i%sym.length];
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=(12+Math.random()*16)+"px";
+    h.style.animationDuration=(9+Math.random()*10)+"s";
+    h.style.animationDelay=(Math.random()*12)+"s";
+    box.appendChild(h);
+  }
+})();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

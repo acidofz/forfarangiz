@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Для Фарангиз{% endblock %}
+{% block content %}
+<div class="wrap wide">
+  <div class="hero">
+    <div class="big-emoji">💗</div>
+    <h1>Для Фарангиз</h1>
+    <div class="days">мы вместе уже <b>{{ days }}</b> {{ days|plural_days }}</div>
+  </div>
+
+  {% if note %}
+  <div class="card note-card">
+    <div class="label">Записка дня · {{ note.published_on.strftime('%d.%m') }}</div>
+    {% if note.image %}<img class="photo" src="{{ url_for('media', name=note.image) }}" alt="">{% endif %}
+    <div class="letter">{{ note.text|paragraphs }}</div>
+    {% if note.audio %}<audio controls preload="none" src="{{ url_for('media', name=note.audio) }}"></audio>{% endif %}
+    {% if has_archive %}<a class="more" href="{{ url_for('notes_archive') }}">все записки →</a>{% endif %}
+  </div>
+  {% endif %}
+
+  <div class="section-title" style="margin-top:26px">Открой, когда…</div>
+  {% if envelopes %}
+  <div class="grid">
+    {% for e in envelopes %}
+    <a class="env" href="{{ url_for('envelope', eid=e.id) }}" style="animation-delay:{{ loop.index0 * 0.06 }}s">
+      {% if e.open_count == 0 %}<span class="new" title="ещё не открыт"></span>{% endif %}
+      <div class="e">{{ e.emoji }}</div>
+      <div class="t">{{ e.title }}</div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card empty">Скоро здесь появятся письма для тебя 💌</div>
+  {% endif %}
+
+  {% if session.admin %}<div class="foot"><a href="{{ url_for('admin') }}">админка</a></div>{% endif %}
+</div>
+{% endblock %}

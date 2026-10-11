@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Записка{% endblock %}
+{% block content %}
+<div class="wrap wide">
+  <a class="back" href="{{ url_for('admin_notes') }}">← записки</a>
+  {% for m in get_flashed_messages() %}<div class="flash" style="color:var(--bad);background:rgba(255,138,138,.1)">{{ m }}</div>{% endfor %}
+  <form class="card" method="post">
+    <h2>{{ 'Записка' if note.id else 'Новая записка' }}</h2>
+    {% if note.published_on %}<p>Вышла {{ note.published_on.strftime('%d.%m.%Y') }}</p>{% endif %}
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+
+    <div class="field">
+      <label>Текст</label>
+      <textarea name="text" style="min-height:160px" placeholder="Сегодня я вспомнил…">{{ note.text or '' }}</textarea>
+    </div>
+
+    <div class="field">
+      <label>Дата (необязательно — иначе выйдет по очереди)</label>
+      <input type="date" name="scheduled_for" value="{{ note.scheduled_for.isoformat() if note.scheduled_for else '' }}">
+    </div>
+
+    <div class="field">
+      <label>Фото</label>
+      {% if note.image %}
+        <img class="photo" style="max-height:200px;object-fit:cover" src="{{ url_for('media', name=note.image) }}" alt="">
+        <label class="check"><input type="checkbox" name="remove_image" value="1"> удалить фото</label>
+      {% endif %}
+      <div class="uploader" data-kind="image">
+        <input type="file" accept="image/*">
+        <input type="hidden" name="image_path">
+        <div class="up-status"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Голосовое</label>
+      {% if note.audio %}
+        <audio controls src="{{ url_for('media', name=note.audio) }}"></audio>
+        <label class="check"><input type="checkbox" name="remove_audio" value="1"> удалить</label>
+      {% endif %}
+      <div class="uploader" data-kind="audio">
+        <input type="file" accept="audio/*">
+        <input type="hidden" name="audio_path">
+        <div class="up-status"></div>
+      </div>
+    </div>
+
+    <button>Сохранить</button>
+  </form>
+
+  {% if note.id %}
+  <form method="post" action="{{ url_for('admin_note_delete', nid=note.id) }}" onsubmit="return confirm('Удалить записку?')">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button class="danger">Удалить</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='upload.js') }}"></script>{% endblock %}

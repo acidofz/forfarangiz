@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Все записки{% endblock %}
+{% block content %}
+<div class="wrap">
+  <a class="back" href="{{ url_for('home') }}">← назад</a>
+  <h1 class="center">Все записки</h1>
+  {% for n in notes %}
+  <div class="card note-card" style="margin-bottom:12px;animation-delay:{{ loop.index0 * 0.05 }}s">
+    <div class="label">{{ n.published_on.strftime('%d.%m.%Y') }}</div>
+    {% if n.image %}<img class="photo" src="{{ url_for('media', name=n.image) }}" alt="" loading="lazy">{% endif %}
+    <div class="letter">{{ n.text|paragraphs }}</div>
+    {% if n.audio %}<audio controls preload="none" src="{{ url_for('media', name=n.audio) }}"></audio>{% endif %}
+  </div>
+  {% else %}
+  <div class="card empty">Пока ни одной записки</div>
+  {% endfor %}
+</div>
+{% endblock %}

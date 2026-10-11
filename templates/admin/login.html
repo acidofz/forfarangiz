@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block body_class %}centered{% endblock %}
+{% block content %}
+<div class="wrap">
+  <form class="card" method="post">
+    <h2>Админка</h2>
+    {% for m in get_flashed_messages() %}<div class="flash" style="color:var(--bad);background:rgba(255,138,138,.1)">{{ m }}</div>{% endfor %}
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <input type="password" name="password" placeholder="Пароль" autofocus>
+    <button>Войти</button>
+  </form>
+</div>
+{% endblock %}

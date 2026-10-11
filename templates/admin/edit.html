@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ env.title or 'Новый конверт' }}{% endblock %}
+{% block content %}
+<div class="wrap wide">
+  <a class="back" href="{{ url_for('admin') }}">← назад</a>
+  <form class="card" method="post">
+    <h2>{{ 'Конверт' if env.id else 'Новый конверт' }}</h2>
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+
+    <div class="inline">
+      <div class="field"><label>Эмодзи</label><input name="emoji" value="{{ env.emoji or '💌' }}" maxlength="16"></div>
+      <div class="field"><label>Заголовок</label><input name="title" value="{{ env.title or '' }}" placeholder="Открой, когда…" required></div>
+    </div>
+
+    <div class="field">
+      <label>Письмо (пустая строка = новый абзац)</label>
+      <textarea name="body" placeholder="Привет, солнце…">{{ env.body or '' }}</textarea>
+    </div>
+
+    <div class="field">
+      <label>Фото</label>
+      {% if env.image %}
+        <img class="photo" style="max-height:200px;object-fit:cover" src="{{ url_for('media', name=env.image) }}" alt="">
+        <label class="check"><input type="checkbox" name="remove_image" value="1"> удалить фото</label>
+      {% endif %}
+      <div class="uploader" data-kind="image">
+        <input type="file" accept="image/*">
+        <input type="hidden" name="image_path">
+        <div class="up-status"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Голосовое (mp3, m4a, ogg…)</label>
+      {% if env.audio %}
+        <audio controls src="{{ url_for('media', name=env.audio) }}"></audio>
+        <label class="check"><input type="checkbox" name="remove_audio" value="1"> удалить голосовое</label>
+      {% endif %}
+      <div class="uploader" data-kind="audio">
+        <input type="file" accept="audio/*">
+        <input type="hidden" name="audio_path">
+        <div class="up-status"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Ссылка на песню (YouTube, Spotify, Яндекс Музыка…)</label>
+      <input name="music_url" type="url" value="{{ env.music_url or '' }}" placeholder="https://…">
+    </div>
+
+    <div class="field"><label>Порядок</label><input name="position" type="number" value="{{ env.position or 0 }}"></div>
+
+    <label class="check"><input type="checkbox" name="published" {{ 'checked' if env.published }}> Показывать ей</label>
+
+    <button>Сохранить</button>
+  </form>
+
+  {% if env.id %}
+  <form method="post" action="{{ url_for('admin_delete', eid=env.id) }}" onsubmit="return confirm('Удалить конверт?')">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button class="danger">Удалить конверт</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='upload.js') }}"></script>{% endblock %}

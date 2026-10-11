@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body_class %}centered{% endblock %}
+{% block content %}
+<div class="wrap"><div id="app"></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.QUEST_UI = {
+    intro: {{ intro|tojson }},
+    wrong: {{ wrong|tojson }},
+    hintAfter: {{ hint_after|tojson }},
+    homeUrl: {{ url_for('home')|tojson }},
+  };
+</script>
+<script src="{{ url_for('static', filename='quest.js') }}"></script>
+{% endblock %}

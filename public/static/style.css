@@ -1,0 +1,133 @@
+:root{
+  --bg1:#2a0f1f; --bg2:#4a1530; --bg3:#7a2a3f;
+  --card:rgba(255,255,255,.08); --card-border:rgba(255,255,255,.16);
+  --text:#fff5f7; --muted:#f3c9d4; --accent:#ff7aa2; --accent2:#ffb38a;
+  --ok:#7ee0a8; --bad:#ff8a8a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:"Nunito",system-ui,sans-serif;color:var(--text);
+  background:radial-gradient(120% 90% at 20% 0%,var(--bg3) 0%,var(--bg2) 40%,var(--bg1) 100%) fixed;
+  background-color:var(--bg1);min-height:100vh;padding:24px 16px;overflow-x:hidden;
+}
+body.centered{display:flex;align-items:center;justify-content:center}
+a{color:var(--accent2)}
+.hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.hearts span{position:absolute;bottom:-40px;opacity:0;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.55}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
+.wrap{position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto}
+.wrap.wide{max-width:720px}
+.card{
+  background:var(--card);border:1px solid var(--card-border);border-radius:24px;
+  padding:28px 22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 20px 60px rgba(0,0,0,.35);animation:appear .5s ease;
+}
+@keyframes appear{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+h1,h2{font-family:"Playfair Display",serif;font-weight:600;line-height:1.2}
+h1{font-size:30px;margin-bottom:14px}
+h2{font-size:22px;margin-bottom:14px}
+p{line-height:1.6;color:var(--muted)}
+p+p{margin-top:10px}
+.big-emoji{font-size:54px;text-align:center;margin-bottom:10px}
+.center{text-align:center}
+.progress{display:flex;gap:6px;margin-bottom:20px}
+.progress i{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.15);transition:background .4s}
+.progress i.done{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.progress i.now{background:rgba(255,255,255,.45)}
+.label{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px;font-weight:800}
+.q{font-size:20px;color:var(--text);font-weight:600;margin-bottom:18px;line-height:1.45}
+.qimg{width:100%;border-radius:16px;margin-bottom:16px;display:block}
+input,textarea,select{
+  width:100%;padding:14px 16px;border-radius:14px;border:1px solid var(--card-border);
+  background:rgba(0,0,0,.25);color:var(--text);font-size:16px;font-family:inherit;outline:none;
+}
+textarea{min-height:220px;resize:vertical;line-height:1.55}
+input:focus,textarea:focus{border-color:var(--accent)}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.4)}
+input[type=checkbox]{width:auto}
+input[type=file]{padding:10px;font-size:14px}
+.btn,button{
+  display:block;width:100%;margin-top:12px;padding:15px;border:0;border-radius:14px;cursor:pointer;
+  font-family:inherit;font-size:17px;font-weight:800;color:#3a0d1c;text-align:center;text-decoration:none;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));transition:transform .15s,filter .15s;
+}
+.btn:active,button:active{transform:scale(.98)}
+.ghost{background:transparent!important;color:var(--muted)!important;border:1px solid var(--card-border)!important;font-weight:600;font-size:15px;padding:12px}
+.danger{background:transparent!important;color:var(--bad)!important;border:1px solid var(--bad)!important;font-size:15px;padding:12px}
+.msg{min-height:24px;margin-top:12px;font-size:15px;text-align:center}
+.msg.bad{color:var(--bad)} .msg.ok{color:var(--ok)}
+.hint{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);color:var(--muted);font-size:15px;display:none}
+.hint.show{display:block;animation:appear .3s}
+.clue{margin-top:18px;padding:18px;border-radius:16px;border:1px dashed var(--accent2);background:rgba(255,179,138,.08);color:var(--text);font-size:17px;line-height:1.5;text-align:center}
+.foot{margin-top:16px;text-align:center;font-size:13px;color:rgba(255,255,255,.35)}
+.foot a{color:inherit}
+.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:5;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* ---------- home ---------- */
+.hero{text-align:center;margin:12px 0 26px}
+.hero .days{font-size:15px;color:var(--muted)}
+.hero .days b{color:var(--accent2);font-size:22px}
+.section-title{font-family:"Playfair Display",serif;font-size:20px;margin:0 4px 14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.env{
+  position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:12px;
+  min-height:150px;padding:18px 16px;border-radius:20px;text-decoration:none;color:var(--text);
+  background:linear-gradient(160deg,rgba(255,122,162,.18),rgba(255,179,138,.08));
+  border:1px solid var(--card-border);transition:transform .2s,box-shadow .2s;animation:appear .5s ease both;
+}
+.env:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.env::before{ /* клапан конверта */
+  content:"";position:absolute;inset:0 0 auto 0;height:46%;border-radius:20px 20px 0 0;pointer-events:none;
+  background:linear-gradient(to bottom right,transparent 49.5%,rgba(255,255,255,.07) 50%) left/50% 100% no-repeat,
+             linear-gradient(to bottom left,transparent 49.5%,rgba(255,255,255,.07) 50%) right/50% 100% no-repeat;
+}
+.env .e{font-size:32px}
+.env .t{font-weight:700;font-size:15px;line-height:1.35}
+.env .new{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,122,162,.25)}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+
+/* ---------- envelope ---------- */
+.back{display:inline-block;margin-bottom:14px;color:var(--muted);text-decoration:none;font-size:15px}
+.letter{font-size:17px}
+.letter p{color:var(--text);line-height:1.75}
+.letter p+p{margin-top:14px}
+.photo{width:100%;border-radius:16px;margin:18px 0 4px;display:block}
+audio{width:100%;margin-top:18px}
+.opening{animation:open .8s ease}
+@keyframes open{0%{opacity:0;transform:translateY(40px) rotateX(25deg)}100%{opacity:1;transform:none}}
+
+/* ---------- admin ---------- */
+.row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--card-border)}
+.row:last-child{border-bottom:0}
+.row .e{font-size:24px}
+.row .info{flex:1;min-width:0}
+.row .info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .info small{color:var(--muted)}
+.row a.edit{color:var(--accent2);font-weight:700;text-decoration:none}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;margin-right:6px;font-weight:800}
+.pill.on{background:rgba(126,224,168,.2);color:var(--ok)}
+.pill.off{background:rgba(255,255,255,.1);color:var(--muted)}
+.field{margin-top:14px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:700}
+.inline{display:flex;gap:10px}
+.inline .field:first-child{flex:0 0 90px}
+.inline .field:last-child{flex:1}
+.check{display:flex;align-items:center;gap:10px;margin-top:16px;color:var(--text)}
+.flash{padding:12px 14px;border-radius:12px;background:rgba(126,224,168,.12);color:var(--ok);margin-bottom:14px;font-size:15px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.topbar form button{width:auto;margin:0;padding:8px 14px}
+
+/* ---------- записка дня ---------- */
+.note-card{background:linear-gradient(160deg,rgba(255,179,138,.14),rgba(255,122,162,.06))}
+.note-card .letter p{font-size:17px}
+.note-card .photo{margin-top:6px}
+.more{display:inline-block;margin-top:14px;color:var(--accent2);font-weight:700;text-decoration:none;font-size:15px}
+
+/* ---------- загрузчик в админке ---------- */
+.up-status{font-size:14px;margin-top:6px;color:var(--muted);min-height:18px}
+.up-status.ok{color:var(--ok)} .up-status.bad{color:var(--bad)}
+.up-preview{margin-top:8px}

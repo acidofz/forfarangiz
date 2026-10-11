@@ -1,0 +1,23 @@
+{
+  "regions": [
+    "icn1"
+  ],
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{templates/**,*.py}",
+      "maxDuration": 15
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/((?!static/).*)",
+      "destination": "/api/index"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/healthz",
+      "schedule": "17 3 * * *"
+    }
+  ]
+}
