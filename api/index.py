@@ -27,4 +27,26 @@ class RestorePath:
 
 
 flask_app.wsgi_app = RestorePath(flask_app.wsgi_app)
+
+
+# --- временная диагностика деплоя (уберём после настройки) ---
+import os  # noqa: E402
+
+from flask import jsonify, request  # noqa: E402
+
+
+@flask_app.errorhandler(404)
+def _debug_404(e):
+    env = request.environ
+    hdrs = {k: v for k, v in request.headers.items()
+            if k.lower().startswith(("x-vercel", "x-now", "x-matched", "x-forwarded-uri", "x-invoke"))}
+    return jsonify(
+        error="not found",
+        path=env.get("PATH_INFO"), script=env.get("SCRIPT_NAME"),
+        query=env.get("QUERY_STRING"), raw_uri=env.get("RAW_URI") or env.get("REQUEST_URI"),
+        commit=(os.getenv("VERCEL_GIT_COMMIT_SHA") or "")[:7],
+        entry=__file__, headers=hdrs,
+    ), 404
+
+
 app = flask_app
