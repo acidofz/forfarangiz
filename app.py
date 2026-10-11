@@ -44,6 +44,29 @@ def database_url() -> str:
     return url
 
 
+def pick_pooler(url: str) -> tuple[str, list]:
+    """Пулер Supabase живёт на кластере aws-0 или aws-1 — пробуем оба, берём рабочий."""
+    if "pooler.supabase.com" not in url:
+        return url, []
+    import psycopg2
+    from sqlalchemy.engine import make_url
+    u = make_url(url)
+    hosts = [u.host]
+    for a, b in (("aws-0-", "aws-1-"), ("aws-1-", "aws-0-")):
+        if u.host.startswith(a):
+            hosts.append(b + u.host[len(a):])
+    tried = []
+    for h in hosts:
+        try:
+            conn = psycopg2.connect(host=h, port=u.port or 6543, user=u.username, password=u.password,
+                                    dbname=u.database or "postgres", sslmode="require", connect_timeout=5)
+            conn.close()
+            return u.set(host=h).render_as_string(hide_password=False), tried + [(h, "ok")]
+        except Exception as e:  # noqa: BLE001
+            tried.append((h, str(e).strip().splitlines()[0][:200]))
+    return url, tried
+
+
 def init_db():
     """Таблицы + стартовые конверты. Безопасно вызывать много раз."""
     db.create_all()
@@ -78,7 +101,7 @@ def create_app():
     secret = os.getenv("SECRET_KEY")
     if ON_VERCEL and not secret:
         raise RuntimeError("SECRET_KEY не задан")
-    url = database_url()
+    url, probe = pick_pooler(database_url())
     app = Flask(__name__, static_folder=str(BASE / "public" / "static"), static_url_path="/static")
     app.config.update(
         SECRET_KEY=secret or secrets.token_hex(32),
@@ -91,6 +114,7 @@ def create_app():
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_SECURE=os.getenv("COOKIE_SECURE", "1" if ON_VERCEL else "0") == "1",
     )
+    app.config["DB_PROBE"] = probe
     db.init_app(app)
 
     if os.getenv("AUTO_INIT", "0" if ON_VERCEL else "1") == "1":
@@ -275,8 +299,9 @@ def register_routes(app: Flask):
         try:
             db.session.execute(text("select 1"))
             return jsonify(ok=True)
-        except SQLAlchemyError:
-            return jsonify(ok=False), 503
+        except SQLAlchemyError as e:
+            msg = str(getattr(e, "orig", e)).strip().splitlines()[0][:200]
+            return jsonify(ok=False, error=msg, pooler=app.config.get("DB_PROBE")), 503
 
     # ----- загрузка файлов (админ): браузер грузит напрямую по выданной ссылке
     @app.post("/admin/upload-url")
